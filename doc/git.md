@@ -6,6 +6,7 @@ git pull
 
 
 cd nextjs
+
 git init
 git remote add origin https://github.com/tztechno/vercel_image_composer.git
 git pull 
