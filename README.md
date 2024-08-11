@@ -1,6 +1,6 @@
 
 ```
- Vercel Web アプリ志向
+Vercel Web アプリ志向
 
 問題点
 Resultホルダへの格納は、webアプリでは不可能
