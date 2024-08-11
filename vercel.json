@@ -1,0 +1,7 @@
+{
+    "functions": {
+        "api/compose.js": {
+            "maxDuration": 60
+        }
+    }
+}
