@@ -31,4 +31,6 @@ http://localhost:3000
 
 http://localhost:3001
 
-npm install
+cd nextjs
+npm run build
+npm start
