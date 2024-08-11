@@ -96,25 +96,25 @@ export default function Home({ initialResultImages }: HomeProps) {
             </Head>
 
             <main>
-                <h1>画像合成ツール</h1>
+                <h1>画像合成ツールvc</h1>
                 <form onSubmit={handleSubmit}>
                     <h2>画像の設置位置を指定</h2>
                     <div>
-                        <label htmlFor="posX_A">Ax:</label>
+                        <label htmlFor="posX_A"> Ax : </label>
                         <input type="number" name="posX_A" step="0.1" required />
-                        <label htmlFor="posY_A">Ay:</label>
+                        <label htmlFor="posY_A"> Ay : </label>
                         <input type="number" name="posY_A" step="0.1" required />
                     </div>
                     <div>
-                        <label htmlFor="posX_B">Bx:</label>
+                        <label htmlFor="posX_B"> Bx : </label>
                         <input type="number" name="posX_B" step="0.1" required />
-                        <label htmlFor="posY_B">By:</label>
+                        <label htmlFor="posY_B"> By : </label>
                         <input type="number" name="posY_B" step="0.1" required />
                     </div>
                     <div>
-                        <label htmlFor="posX_C">Cx:</label>
+                        <label htmlFor="posX_C"> Cx : </label>
                         <input type="number" name="posX_C" step="0.1" required />
-                        <label htmlFor="posY_C">Cy:</label>
+                        <label htmlFor="posY_C"> Cy : </label>
                         <input type="number" name="posY_C" step="0.1" required />
                     </div>
                     <button type="submit" disabled={isLoading}>
