@@ -1,3 +1,13 @@
+
+```
+ Vercel Web アプリ志向
+
+問題点
+Resultホルダへの格納は、webアプリでは不可能
+Resultを使用端末で吐き出す方式に変更する
+
+```
+---
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
