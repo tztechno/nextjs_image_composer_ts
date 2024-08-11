@@ -1,6 +1,6 @@
 {
     "functions": {
-        "api/compose.js": {
+        "api/compose.ts": {
             "maxDuration": 60
         }
     }
