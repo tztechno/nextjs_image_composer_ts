@@ -3,13 +3,13 @@ import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import Image from 'next/image';
 
+interface HomeProps {
+    initialResultImages: string[];
+}
+
 interface ResultImage {
     data: string;
     filename: string;
-}
-
-interface HomeProps {
-    initialResultImages: ResultImage[];
 }
 
 export default function Home({ initialResultImages }: HomeProps) {
@@ -21,8 +21,8 @@ export default function Home({ initialResultImages }: HomeProps) {
         const storedImages = localStorage.getItem('resultImages');
         if (storedImages) {
             setResultImages(JSON.parse(storedImages));
-        } else if (initialResultImages.length > 0) {
-            setResultImages(initialResultImages);
+        } else {
+            setResultImages(initialResultImages.map(filename => ({ data: `/images/Result/${filename}`, filename })));
         }
     }, [initialResultImages]);
 
@@ -33,21 +33,25 @@ export default function Home({ initialResultImages }: HomeProps) {
         const formData = new FormData(event.currentTarget);
 
         try {
+            console.log('Submitting form data');
             const response = await fetch('/api/compose', {
                 method: 'POST',
                 body: formData,
             });
 
+            console.log('Response received:', response.status);
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Network response was not ok');
             }
 
             const result = await response.json();
+            console.log('Result:', result);
             setResultImages(result.images);
             localStorage.setItem('resultImages', JSON.stringify(result.images));
         } catch (error) {
             console.error('Error:', error);
-            setError(`画像の合成中にエラーが発生しました: ${(error as Error).message}`);
+            setError(`An error occurred while composing the images: ${(error as Error).message}`);
         } finally {
             setIsLoading(false);
         }
@@ -93,15 +97,24 @@ export default function Home({ initialResultImages }: HomeProps) {
                 <h1>画像合成ツールvc</h1>
                 <form onSubmit={handleSubmit}>
                     <h2>画像の設置位置を指定</h2>
-                    {['A', 'B', 'C'].map((letter) => (
-                        <div key={letter}>
-                            <label htmlFor={`posX_${letter}`}>{`${letter}x : `}</label>
-                            <input type="number" id={`posX_${letter}`} name={`posX_${letter}`} step="0.1" required />
-                            <br />
-                            <label htmlFor={`posY_${letter}`}>{`${letter}y : `}</label>
-                            <input type="number" id={`posY_${letter}`} name={`posY_${letter}`} step="0.1" required />
-                        </div>
-                    ))}
+                    <div>
+                        <label htmlFor="posX_A"> Ax : </label>
+                        <input type="number" name="posX_A" step="0.1" required /><br />
+                        <label htmlFor="posY_A"> Ay : </label>
+                        <input type="number" name="posY_A" step="0.1" required />
+                    </div>
+                    <div>
+                        <label htmlFor="posX_B"> Bx : </label>
+                        <input type="number" name="posX_B" step="0.1" required /><br />
+                        <label htmlFor="posY_B"> By : </label>
+                        <input type="number" name="posY_B" step="0.1" required />
+                    </div>
+                    <div>
+                        <label htmlFor="posX_C"> Cx : </label>
+                        <input type="number" name="posX_C" step="0.1" required /><br />
+                        <label htmlFor="posY_C"> Cy : </label>
+                        <input type="number" name="posY_C" step="0.1" required />
+                    </div>
                     <button type="submit" disabled={isLoading}>
                         {isLoading ? '処理中...' : '画像を合成して保存'}
                     </button>
@@ -112,10 +125,10 @@ export default function Home({ initialResultImages }: HomeProps) {
                 <h2>結果画像</h2>
                 <div id="thumbnails">
                     {resultImages.map((image, index) => (
-                        <div key={image.filename} className="thumbnail">
+                        <div key={index} className="thumbnail">
                             <Image
                                 src={image.data}
-                                alt={`結果画像 ${index + 1}`}
+                                alt={`Result ${index + 1}`}
                                 width={150}
                                 height={150}
                                 style={{ objectFit: 'contain', border: '1px solid #ddd' }}
@@ -125,7 +138,7 @@ export default function Home({ initialResultImages }: HomeProps) {
                     ))}
                 </div>
                 {resultImages.length > 0 && (
-                    <button onClick={handleDownload}>結果をダウンロード</button>
+                    <button onClick={handleDownload}>Download Results</button>
                 )}
             </main>
         </div>
@@ -133,8 +146,5 @@ export default function Home({ initialResultImages }: HomeProps) {
 }
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
-    // サーバーサイドで初期画像を取得するロジックをここに実装
-    // 例えば、ファイルシステムから画像を読み込むなど
-    const initialResultImages: ResultImage[] = [];
-    return { props: { initialResultImages } };
+    return { props: { initialResultImages: [] } };
 };
