@@ -2,6 +2,9 @@
     "functions": {
         "api/compose.ts": {
             "maxDuration": 60
+        },
+        "api/*.ts": {
+            "runtime": "vercel-node@1.8.3"
         }
     }
 }
