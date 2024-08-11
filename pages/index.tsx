@@ -1,16 +1,23 @@
 import { useState } from 'react';
 import Head from 'next/head';
+import { GetServerSideProps } from 'next';
+import fs from 'fs/promises';
+import path from 'path';
 
-export default function Home({ initialResultImages }) {
-    const [resultImages, setResultImages] = useState(initialResultImages);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
+interface HomeProps {
+    initialResultImages: string[];
+}
 
-    const handleSubmit = async (event) => {
+export default function Home({ initialResultImages }: HomeProps) {
+    const [resultImages, setResultImages] = useState<string[]>(initialResultImages);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setIsLoading(true);
         setError(null);
-        const formData = new FormData(event.target);
+        const formData = new FormData(event.currentTarget);
 
         try {
             const response = await fetch('/api/compose', {
@@ -27,7 +34,7 @@ export default function Home({ initialResultImages }) {
             setResultImages(result.images);
         } catch (error) {
             console.error('Error:', error);
-            setError(`An error occurred while composing the images: ${error.message}`);
+            setError(`An error occurred while composing the images: ${(error as Error).message}`);
         } finally {
             setIsLoading(false);
         }
@@ -88,10 +95,7 @@ export default function Home({ initialResultImages }) {
     );
 }
 
-export async function getServerSideProps() {
-    const fs = require('fs').promises;
-    const path = require('path');
-
+export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
     const FOLDERS = {
         result: path.join(process.cwd(), 'public', 'images', 'Result'),
     };
@@ -104,4 +108,4 @@ export async function getServerSideProps() {
         console.error('Error reading Result folder:', error);
         return { props: { initialResultImages: [] } };
     }
-}
+};

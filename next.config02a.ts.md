@@ -1,4 +1,6 @@
-module.exports = {
+import type { NextConfig } from 'next';
+
+const config: NextConfig = {
     webpack: (config, { isServer }) => {
         if (!isServer) {
             config.resolve.fallback = {
@@ -9,3 +11,5 @@ module.exports = {
         return config;
     },
 };
+
+export default config;

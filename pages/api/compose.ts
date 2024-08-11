@@ -1,3 +1,4 @@
+import { NextApiRequest, NextApiResponse } from 'next';
 import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
@@ -19,13 +20,12 @@ export const config = {
     },
 };
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
-
         try {
             // Multer middleware
-            await new Promise((resolve, reject) => {
-                upload.none()(req, res, (err) => {
+            await new Promise<void>((resolve, reject) => {
+                upload.none()(req as any, res as any, (err: any) => {
                     if (err) reject(err);
                     else resolve();
                 });
@@ -40,9 +40,16 @@ export default async function handler(req, res) {
                 return res.status(400).json({ error: 'One or more image folders are empty.' });
             }
 
-            const { posX_A, posY_A, posX_B, posY_B, posX_C, posY_C } = req.body;
+            const { posX_A, posY_A, posX_B, posY_B, posX_C, posY_C } = req.body as {
+                posX_A: string;
+                posY_A: string;
+                posX_B: string;
+                posY_B: string;
+                posX_C: string;
+                posY_C: string;
+            };
 
-            const composedImages = [];
+            const composedImages: string[] = [];
 
             for (const background of backgrounds) {
                 for (const imageA of imagesA) {
@@ -57,9 +64,9 @@ export default async function handler(req, res) {
 
                             const composite = await sharp(backgroundPath)
                                 .composite([
-                                    { input: imageAPath, top: Math.round(parseFloat(posY_A) * backgroundImage.height), left: Math.round(parseFloat(posX_A) * backgroundImage.width) },
-                                    { input: imageBPath, top: Math.round(parseFloat(posY_B) * backgroundImage.height), left: Math.round(parseFloat(posX_B) * backgroundImage.width) },
-                                    { input: imageCPath, top: Math.round(parseFloat(posY_C) * backgroundImage.height), left: Math.round(parseFloat(posX_C) * backgroundImage.width) },
+                                    { input: imageAPath, top: Math.round(parseFloat(posY_A) * (backgroundImage.height || 0)), left: Math.round(parseFloat(posX_A) * (backgroundImage.width || 0)) },
+                                    { input: imageBPath, top: Math.round(parseFloat(posY_B) * (backgroundImage.height || 0)), left: Math.round(parseFloat(posX_B) * (backgroundImage.width || 0)) },
+                                    { input: imageCPath, top: Math.round(parseFloat(posY_C) * (backgroundImage.height || 0)), left: Math.round(parseFloat(posX_C) * (backgroundImage.width || 0)) },
                                 ])
                                 .toBuffer();
 
@@ -74,11 +81,9 @@ export default async function handler(req, res) {
             }
 
             res.status(200).json({ message: 'Images composed successfully', images: composedImages });
-
-
         } catch (error) {
             console.error('Error processing images:', error);
-            res.status(500).json({ error: `Internal server error: ${error.message}` });
+            res.status(500).json({ error: `Internal server error: ${(error as Error).message}` });
         }
     } else {
         res.setHeader('Allow', ['POST']);
