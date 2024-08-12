@@ -2,4 +2,4 @@
 
 合成画像を個別ファイルでダウンロードする
 
-localは成功、vercelは失敗
+localは成功、vercelへのdeployを目指したが失敗
