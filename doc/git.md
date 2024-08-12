@@ -31,6 +31,10 @@ http://localhost:3000
 
 http://localhost:3001
 
+
 cd nextjs
-npm run build
-npm start
+npm run dev
+
+npm install --save-dev @types/fabric
+
+

@@ -116,14 +116,6 @@ const IndexPage = () => {
         return results;
     };
 
-    const downloadImage = (filename: string, data: string) => {
-        // 画像をBase64形式からBlob形式に変換
-        const link = document.createElement('a');
-        link.href = data;
-        link.download = filename;
-        link.click();
-    };
-
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setIsLoading(true);
@@ -134,12 +126,6 @@ const IndexPage = () => {
             const composedImages = await composeImages(formData);
             console.log(`Setting ${composedImages.length} images to state`);
             setResultImages(composedImages);
-
-            // ダウンロード機能を実行
-            for (const image of composedImages) {
-                downloadImage(image.filename, image.data);
-            }
-
         } catch (error) {
             console.error('Error:', error);
             setError(`An error occurred while composing the images: ${(error as Error).message}`);

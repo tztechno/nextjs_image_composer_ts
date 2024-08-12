@@ -27,13 +27,12 @@ const IndexPage = () => {
     }, []);
 
     const composeImages = async (formData: FormData) => {
-        // 相対位置の取得
-        const posX_A = parseFloat(formData.get('posX_A') as string);
-        const posY_A = parseFloat(formData.get('posY_A') as string);
-        const posX_B = parseFloat(formData.get('posX_B') as string);
-        const posY_B = parseFloat(formData.get('posY_B') as string);
-        const posX_C = parseFloat(formData.get('posX_C') as string);
-        const posY_C = parseFloat(formData.get('posY_C') as string);
+        const posX_A = parseInt(formData.get('posX_A') as string);
+        const posY_A = parseInt(formData.get('posY_A') as string);
+        const posX_B = parseInt(formData.get('posX_B') as string);
+        const posY_B = parseInt(formData.get('posY_B') as string);
+        const posX_C = parseInt(formData.get('posX_C') as string);
+        const posY_C = parseInt(formData.get('posY_C') as string);
 
         const { G, A, B, C } = images;
 
@@ -65,8 +64,7 @@ const IndexPage = () => {
                                     if (error) {
                                         reject(`Failed to load image A ${imgA}: ${error.message}`);
                                     } else {
-                                        // 相対位置に基づいて画像の位置を設定
-                                        img.set({ left: posX_A * canvas.width, top: posY_A * canvas.height });
+                                        img.set({ left: posX_A, top: posY_A });
                                         canvas.add(img);
                                         resolve();
                                     }
@@ -77,7 +75,7 @@ const IndexPage = () => {
                                     if (error) {
                                         reject(`Failed to load image B ${imgB}: ${error.message}`);
                                     } else {
-                                        img.set({ left: posX_B * canvas.width, top: posY_B * canvas.height });
+                                        img.set({ left: posX_B, top: posY_B });
                                         canvas.add(img);
                                         resolve();
                                     }
@@ -88,7 +86,7 @@ const IndexPage = () => {
                                     if (error) {
                                         reject(`Failed to load image C ${imgC}: ${error.message}`);
                                     } else {
-                                        img.set({ left: posX_C * canvas.width, top: posY_C * canvas.height });
+                                        img.set({ left: posX_C, top: posY_C });
                                         canvas.add(img);
                                         resolve();
                                     }
@@ -98,7 +96,7 @@ const IndexPage = () => {
 
                         // キャンバスを画像としてエクスポート
                         const base64Image = canvas.toDataURL({ format: 'png' });
-                        const filename = `${imgA.split('.')[0]}_${imgB.split('.')[0]}_${imgC.split('.')[0]}_${bg.split('.')[0]}.png`;
+                        const filename = `${imgA}_${imgB}_${imgC}_${bg}`;
 
                         console.log(`Composed: ${filename}`);
                         results.push({
@@ -116,14 +114,6 @@ const IndexPage = () => {
         return results;
     };
 
-    const downloadImage = (filename: string, data: string) => {
-        // 画像をBase64形式からBlob形式に変換
-        const link = document.createElement('a');
-        link.href = data;
-        link.download = filename;
-        link.click();
-    };
-
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setIsLoading(true);
@@ -134,12 +124,6 @@ const IndexPage = () => {
             const composedImages = await composeImages(formData);
             console.log(`Setting ${composedImages.length} images to state`);
             setResultImages(composedImages);
-
-            // ダウンロード機能を実行
-            for (const image of composedImages) {
-                downloadImage(image.filename, image.data);
-            }
-
         } catch (error) {
             console.error('Error:', error);
             setError(`An error occurred while composing the images: ${(error as Error).message}`);
@@ -162,10 +146,10 @@ const IndexPage = () => {
                     {['A', 'B', 'C'].map((letter) => (
                         <div key={letter}>
                             <label htmlFor={`posX_${letter}`}>{`${letter}x : `}</label>
-                            <input type="number" id={`posX_${letter}`} name={`posX_${letter}`} step="0.01" min="0" max="1" required />
+                            <input type="number" id={`posX_${letter}`} name={`posX_${letter}`} step="0.1" required />
                             <br />
                             <label htmlFor={`posY_${letter}`}>{`${letter}y : `}</label>
-                            <input type="number" id={`posY_${letter}`} name={`posY_${letter}`} step="0.01" min="0" max="1" required />
+                            <input type="number" id={`posY_${letter}`} name={`posY_${letter}`} step="0.1" required />
                         </div>
                     ))}
                     <button type="submit" disabled={isLoading}>
