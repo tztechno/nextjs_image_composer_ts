@@ -17,7 +17,7 @@ git push -f origin master
 cd nextjs
 git pull
 git add .
-git commit -m “2024-08-11”
+git commit -m “2024-08-12”
 git push -u origin master
 
 git push -f origin master
