@@ -34,14 +34,14 @@ const IndexPage = () => {
         const posX_C = parseInt(formData.get('posX_C') as string);
         const posY_C = parseInt(formData.get('posY_C') as string);
 
-        const { backgrounds, imagesA, imagesB, imagesC } = images;
+        const { G, A, B, C } = images;
 
         const results: { data: string; filename: string }[] = [];
 
-        for (const bg of backgrounds) {
-            for (const imgA of imagesA) {
-                for (const imgB of imagesB) {
-                    for (const imgC of imagesC) {
+        for (const bg of G) {
+            for (const imgA of A) {
+                for (const imgB of B) {
+                    for (const imgC of C) {
                         console.log(`Composing: ${imgA}_${imgB}_${imgC}_${bg}`);
                         const canvas = new fabric.Canvas(null, { width: 500, height: 500 });
 
