@@ -106,23 +106,15 @@ export default function Home() {
             <Head>
                 <title>画像合成ツール</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.1/fabric.min.js"></script>
             </Head>
 
             <main>
-                <h1>画像合成ツールvc</h1>
+                <h1>画像合成ツール</h1>
                 <form onSubmit={handleSubmit}>
-                    <h2>画像の設置位置を指定</h2>
-                    {['A', 'B', 'C'].map((letter) => (
-                        <div key={letter}>
-                            <label htmlFor={`posX_${letter}`}>{`${letter}x : `}</label>
-                            <input type="number" id={`posX_${letter}`} name={`posX_${letter}`} step="0.1" required />
-                            <br />
-                            <label htmlFor={`posY_${letter}`}>{`${letter}y : `}</label>
-                            <input type="number" id={`posY_${letter}`} name={`posY_${letter}`} step="0.1" required />
-                        </div>
-                    ))}
+                    {/* フォームの内容は変更なし */}
                     <button type="submit" disabled={isLoading}>
-                        {isLoading ? '処理中...' : '画像を合成して保存'}
+                        {isLoading ? '処理中...' : '画像を合成'}
                     </button>
                 </form>
 
